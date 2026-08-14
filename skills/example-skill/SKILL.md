@@ -1,7 +1,7 @@
 ---
 name: example-skill
 description: Agent Skill 디렉터리가 패키지 규칙에 맞게 구성됐는지 점검할 때 사용 — SKILL.md가 1개인지, references/scripts/assets/templates 배치가 올바른지, 디렉터리명과 frontmatter name이 일치하는지, 개발 자료가 혼입되지 않았는지 검사. 특정 skill 디렉터리의 구조 점검 요청, 새 Skill 작성 전 참고 구현 확인, 배포된 Skill의 support file 설치 확인에 사용.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # example-skill
@@ -26,6 +26,9 @@ Repository 구성 검증용 참고 구현(reference implementation)임.
 1. 점검 대상 Skill 디렉터리 경로를 확인한다.
 2. `scripts/example.sh <경로>` 를 실행해 구조 점검 결과를 얻는다.
 3. 출력의 `RESULT:` 줄을 확인한다. `RESULT: OK` 가 아니면 실패 항목을 그대로 보고한다.
+   - 스크립트를 실행할 수 없거나 디렉터리 내용을 확인할 수 없으면 **점검을 수행한 것처럼
+     판단하지 말 것**. 이 경우 `RESULT: UNKNOWN` 과 확인하지 못한 이유를 보고한다.
+   - 실제로 확인한 항목만 근거로 삼는다. 확인하지 않은 항목을 통과로 단정하지 않는다.
 4. 규칙의 근거·예외·설치 확인 방법이 필요하면 `references/example.md` 를 읽는다.
    설치 방법을 묻는 요청이면 해당 문서의 "설치 확인 방법" 절을 근거로 답한다.
 
@@ -51,7 +54,13 @@ bash scripts/example.sh /path/to/skills/my-skill
 
 ```text
 대상: <skill directory>
-RESULT: OK | FAIL
+RESULT: OK | FAIL | UNKNOWN
 실패 항목:
 - <항목>: <이유>
 ```
+
+| RESULT | 의미 |
+|---|---|
+| `OK` | 모든 점검 항목을 실제로 확인했고 위반 없음 |
+| `FAIL` | 확인 결과 위반 항목 존재 — 실패 항목에 나열 |
+| `UNKNOWN` | 점검을 수행할 수 없었음 — 사유를 함께 보고. 추측으로 `OK`를 쓰지 말 것 |
